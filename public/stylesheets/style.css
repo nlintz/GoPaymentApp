@@ -1,0 +1,151 @@
+body {
+  margin: 0 auto;
+  padding: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+ul {
+	margin: 0;
+	padding: 0;
+}
+
+.content-container {
+	/*background-color: red;*/
+	height: 665px;
+	/*height: 100%;*/
+	position: relative;
+	width: 100%;
+
+}
+
+.heading-container{
+	border-bottom: 2px solid #666666;
+	height:126px;
+	position: relative;
+	width:100%;
+}
+
+.heading-container .bottom {
+	/*bottom: 66%;*/
+	height: 81px;
+	position: relative;
+}
+
+.heading-container .bottom ul {
+	height: 100%;
+	text-align: center;
+	list-style-type: none;
+	padding-left: 26px;
+	padding-right:26px;
+}
+
+.heading-container .bottom ul li {
+	border-left: 2px solid rgba(80, 81, 80, .5);
+	border-right: 2px solid rgba(80, 81, 80, .5);
+	float: left;
+	width: 143px;
+	position: relative;
+	text-decoration: none;
+	height: 100%;
+	background-color: #C6CBD3;
+	margin: 0 20px 0 20px;
+}
+
+.heading-container .top {
+	position:relative;
+	background-color: #505150;
+	height: 45px;
+	width: 100%;
+}
+
+.footer {
+	position:absolute;
+	bottom: 0px;
+	height: 18.5px;
+	background-color: #505150;
+	width:100%;
+}
+
+.page-container {
+	width: 612px;
+	height:792px;
+	margin: 0 auto;
+	border-left: 1px solid #505150;
+	border-right: 1px solid #505150;
+}
+
+.content-block {
+	background-color: #C6CBD3;
+	position: absolute;
+	display: inline-block;
+}
+
+.revenue-container{
+	border-top: 3pt solid #0099CC;
+	width: 363px;
+	height: 332px;
+	left: 18px;
+	position: absolute;
+	top: 20px;
+}
+
+.revenue {
+	width: 361px;
+	height: 100%;
+	background-color: #C6CBD3;
+	left: 1px;
+}
+
+.insights-container {
+	border-top: 3pt solid #FFCC33;
+	height: 240px;
+	width: 205px;
+	left: 391px;
+	top: 65px;
+	position: absolute;
+
+}
+
+.insights {
+	height: 100%;
+	width: 203px;
+	background-color: #C6CBD3;
+	left: 1px;
+}
+
+.transactions-container {
+	border-top: 3pt solid #E21F26;
+	left: 42px;
+	top: 380px;
+	height: 247px;
+	width: 205px;
+	position: absolute;
+}
+
+.transactions {
+	height: 100%;
+	width: 203px;
+	background-color: #C6CBD3;
+	left: 1px;
+}
+
+.itemized_products-container {
+	border-top: 3pt solid #4E9F45;
+	height: 217px;
+	width: 271px;
+	left: 305px;
+	top: 380px;
+	position: absolute;
+}
+
+.itemized_products{
+	height: 100%;
+	width: 269px;
+	background-color: #C6CBD3;
+	left: 1px;
+
+}
+
+

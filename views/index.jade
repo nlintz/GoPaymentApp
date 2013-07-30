@@ -1,0 +1,57 @@
+extends layout
+
+block content
+    div.page-container(ng-controller = "DataReportController")
+        div.heading-container
+            div.top
+                div {{businessName}}
+                div
+                    div Data Report By GoPayment
+                    div {{dataReportDate}}
+            div.bottom
+                ul
+                    li
+                        div Transactions
+                        div This Month:
+                        div(ng-bind=transactionsThisMonth)
+                    li
+                        div Revenue
+                        div This Month
+                        div(ng-bind=revenueThisMonth)
+                    li
+                        div Sales Tax
+                        div Due This Quarter
+                        div(ng-bind="salesTaxThisQuarter")
+
+        div.content-container
+            div.revenue-container
+                div.revenue.content-block
+                    div.revenue-label Revenue Over Month
+                    div#RevenueGraph
+            div.insights-container
+                div.insights.content-block
+                    div.insights-label Insights
+                    div.insights-top(ng-bind="insightsTop")
+                    div.insights-bottom(ng-bind="insightsBottom")
+            div.transactions-container
+                div.transactions.content-block
+                    div.insights-label Transactions By Day Of Week: 
+                    div.transactions-month{{transactionsMonth}}
+                    div#TransactionsGraph
+            div.itemized_products-container
+                div.itemized_products.content-block
+                    div.itemized_products-label Top Products
+                    div.itemized_products-label Transactions This Month
+                    div#ItemizedProductsGraph
+            div.footer
+
+    script(type="text/javascript",
+        src="angular/angular.min.js")
+    script(type='text/javascript' 
+        src="javascripts/controllers.js")
+    script(type='text/javascript' 
+        src="d3/d3.js")
+
+        //- h1= title
+        //- p Welcome to #{title}
+        
