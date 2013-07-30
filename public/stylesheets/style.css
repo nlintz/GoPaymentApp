@@ -21,7 +21,7 @@ ul {
 }
 
 .heading-container{
-	border-bottom: 2px solid #666666;
+	border-bottom: 1px solid #666666;
 	height:126px;
 	position: relative;
 	width:100%;
@@ -42,8 +42,8 @@ ul {
 }
 
 .heading-container .bottom ul li {
-	border-left: 2px solid rgba(80, 81, 80, .5);
-	border-right: 2px solid rgba(80, 81, 80, .5);
+	border-left: 2px solid rgba(80, 81, 80, .4);
+	border-right: 2px solid rgba(80, 81, 80, .4);
 	float: left;
 	width: 143px;
 	position: relative;
@@ -89,6 +89,10 @@ ul {
 	left: 18px;
 	position: absolute;
 	top: 20px;
+}
+
+#RevenueGraph {
+	padding: 20px 0px 0px 30px;
 }
 
 .revenue {
@@ -149,3 +153,17 @@ ul {
 }
 
 
+		path {
+		    stroke: steelblue;
+		    stroke-width: 2;
+		    fill: none;
+		}
+
+		line {
+		    stroke: black;
+		}
+
+		text {
+		    font-family: Arial;
+		    font-size: 9pt;
+		}

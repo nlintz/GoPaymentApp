@@ -24,7 +24,7 @@ block content
                         div(ng-bind="salesTaxThisQuarter")
 
         div.content-container
-            div.revenue-container
+            div.revenue-container(ng-controller="RevenueController")
                 div.revenue.content-block
                     div.revenue-label Revenue Over Month
                     div#RevenueGraph
@@ -45,12 +45,12 @@ block content
                     div#ItemizedProductsGraph
             div.footer
 
+    script(type='text/javascript' 
+        src="d3/d3.js")
     script(type="text/javascript",
         src="angular/angular.min.js")
     script(type='text/javascript' 
         src="javascripts/controllers.js")
-    script(type='text/javascript' 
-        src="d3/d3.js")
 
         //- h1= title
         //- p Welcome to #{title}
