@@ -72,8 +72,8 @@ ul {
 	width: 612px;
 	height:792px;
 	margin: 0 auto;
-	border-left: 1px solid #505150;
-	border-right: 1px solid #505150;
+	/*border-left: 1px solid #505150;*/
+	/*border-right: 1px solid #505150;*/
 }
 
 .content-block {
