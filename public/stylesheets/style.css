@@ -139,7 +139,7 @@ h1, h2, h3, h4, h5 {
 }
 
 #RevenueGraph {
-	padding: 30px 0px 0px 30px;
+	padding: 20px 0px 0px 30px;
 }
 
 .revenue {
@@ -258,7 +258,7 @@ hr {
 }
 
 #TransactionsGraph{
-	padding: 5px 0px 0px 15px;
+	padding: 5px 0px 0px 0px;
 }
 
 .itemized_products-container {
@@ -280,9 +280,40 @@ hr {
 }
 
 path {
-    stroke: steelblue;
     stroke-width: 2;
     fill: none;
+}
+
+path.revenue0 {
+    stroke: #66CCCC;
+}
+path.revenue1 {
+    stroke: #E21F26;
+}
+path.revenue2 {
+    stroke: #F89824;
+}
+
+rect.dayOfWeek0 {
+	fill: #58AAAC;
+}
+rect.dayOfWeek1 {
+	fill: #0098CD;
+}
+rect.dayOfWeek2 {
+	fill: #58AAAC;
+}
+rect.dayOfWeek3 {
+	fill: #006666;
+}
+rect.dayOfWeek4 {
+	fill: #63C7CC;
+}
+rect.dayOfWeek5 {
+	fill: #1E8384;
+}
+rect.dayOfWeek6 {
+	fill: #7AC143;
 }
 
 line {
