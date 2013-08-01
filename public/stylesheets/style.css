@@ -1,4 +1,28 @@
+@font-face 
+{
+	font-family: DINNextLightRegular;
+	src: url('/harmony_fonts/DINNextLTPro-Light.ttf');
+	font-weight: normal;
+}
+@font-face 
+{
+	font-family: DINNextLightMedium;
+	src: url('/harmony_fonts/DINNextLTPro-Medium.ttf');
+}
+@font-face 
+{
+	font-family: HelveticaNeueRegular;
+	src: url('/harmony_fonts/HelveticaNeueLTW1G-Roman.ttf');
+}
+@font-face 
+{
+	font-family: HelveticaNeueLight;
+	src: url('/harmony_fonts/HelveticaNeueLTW1G-Lt.ttf');
+}
+
+
 body {
+  font-size: 14pt;
   margin: 0 auto;
   padding: 0;
   position: absolute;
@@ -14,7 +38,7 @@ ul {
 h1, h2, h3, h4, h5 {
 	margin: 0;
 	padding: 0;
-	font-family: arial, verdana, sans-serif;
+	font-family: HelveticaNeueRegular;
 }
 
 
@@ -22,13 +46,15 @@ h1, h2, h3, h4, h5 {
 	color: #231F20;
 }
 .bottom .label-text {
-	padding-top: 5px;
-	font-weight: normal;
-	font-size: 13pt;
+	font-family: HelveticaNeueRegular;
+	font-weight: bold;
+	padding-top: 8px;
+	font-size: 16px;
 }
 .bottom .sub-label-text {
+	font-family: HelveticaNeueRegular;
 	font-weight: normal;
-	font-size: 11pt;
+	font-size: 16px;
 }
 
 .content-container {
@@ -46,14 +72,16 @@ h1, h2, h3, h4, h5 {
 
 .document-title-text {
 	font-weight: 100;
+	font-family: HelveticaNeueLight;
+
 	color: #F1F2F2;
 	position: relative;
-	top: 10px;
-	font-size: 18pt;
+	top: 14px;
+	font-size: 22px;
 }
 
 .heading-container{
-	border-bottom: 1px solid #666666;
+	border-bottom: 2pt solid rgb(198, 203, 211);
 	height:126px;
 	position: relative;
 	width:100%;
@@ -81,7 +109,7 @@ h1, h2, h3, h4, h5 {
 	position: relative;
 	text-decoration: none;
 	height: 100%;
-	background-color: #C6CBD3;
+	background-color: rgba(198, 203, 211, .45);
 	margin: 0 20px 0 20px;
 }
 
@@ -139,25 +167,26 @@ h1, h2, h3, h4, h5 {
 }
 
 #RevenueGraph {
-	padding: 20px 0px 0px 30px;
+	padding: 20px 0px 0px 40px;
 }
 
 .revenue {
 	width: 361px;
 	height: 100%;
-	background-color: rgba(198, 203, 211, .65);
+	background-color: rgba(198, 203, 211, .45);
 	left: 1px;
 }
 
 .subTitle {
 	top: 5px;
 	position: absolute;
-	right: 2%;
+	right: 5px;
 	text-align: right;
 }
 
 .subtitle-text {
-	font-weight: 100;
+	font-family: HelveticaNeueLight;
+	font-weight: lighter;
 	color: #F1F2F2;
 	font-size: 8pt;
 }
@@ -207,7 +236,7 @@ hr {
 .insights {
 	height: 100%;
 	width: 202px;
-	background-color: rgba(198, 203, 211, .65);
+	background-color: rgba(198, 203, 211, .45);
 	left: 1px;
 }
 
@@ -224,23 +253,31 @@ hr {
 	left: 42px;
 	top: 380px;
 	height: 247px;
-	width: 205px;
+	width: 233px;
 	position: absolute;
 }
 
 .transactions {
 	height: 100%;
-	width: 203px;
-	background-color: rgba(198, 203, 211, .65);
+	width: 231px;
+	background-color: rgba(198, 203, 211, .45);
 	left: 1px;
 	padding-top: 5px;
 }
 
 .transactionsLabel {
-	border: 1px solid black;
+	font-size: 16px;
+	font-family: DINNextLightRegular;
+	font-weight: bolder;
 	width: 80px;
 	margin: 0 auto;
 	margin-top: 5px;
+}
+
+.transactionsLabel-container {
+	margin-top: 2px;
+	border: 1px solid black;
+	display: inline-block;
 }
 
 .transactions-label {
@@ -258,7 +295,7 @@ hr {
 }
 
 #TransactionsGraph{
-	padding: 5px 0px 0px 0px;
+	padding: 5px 0px 0px 20px;
 }
 
 .itemized_products-container {
@@ -318,6 +355,10 @@ rect.dayOfWeek6 {
 
 line {
     stroke: black;
+}
+
+line.transactionsAxes {
+	stroke-width: .5pt;
 }
 
 text {

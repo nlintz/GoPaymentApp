@@ -18,7 +18,7 @@ function DataReportController($scope, $http){
 
 function TransactionsController($scope, $http){
 	var width = 186;
-	var height = 175;
+	var height = 170;
 	var maximum = 0;	
 	var yAxisHeight = height - 15; // We need to offset the yaxis by 15px to accomadate the text
 	var xAxisWidth = width + 15; // We need to offset the yaxis by 15px to accomadate the text
@@ -31,58 +31,57 @@ function TransactionsController($scope, $http){
 			maximum = Math.max(transaction, maximum);
 			plotData.push(transaction);
 		})
-		console.log(plotData)
 		makePlot()
 
 	});
 
 	function makePlot(){
 		var x = d3.scale.linear().domain([0, 6]).range([0, xAxisWidth]);
-		var y = d3.scale.linear().domain([0, maximum]).range([yAxisHeight, 0]);
+		var y = d3.scale.linear().domain([0, maximum]).range([height, 0]);
 
-
+		var rectangleWidth = width/7
 		var TransactionsGraph = d3.select('#TransactionsGraph')
 			.append('svg:svg')
 			.attr('width', width)
 			.attr('height', height)
 
-
-
-		TransactionsGraph.selectAll('rect')
-			.data(plotData)
-			.enter().append("rect")
-			.attr("class", function(d, i){ return "dayOfWeek"+i})
-			.attr("x", function(d, i) { return i*23 + 25 } )
-			.attr("y", function(d) { return yAxisHeight - y(d); })
-			.attr("width", 23)
-			.attr("height", function(d, i){ return y(d) + 5})
-
-		//Y Axes
+							//Y Axes
 		TransactionsGraph.append("svg:line")
-			.attr("x1", 25)
-			.attr("x2", 25)
+			.attr("x1", 1)
+			.attr("x2", 1)
 			.attr("y1", 0)
-			.attr("y2", yAxisHeight + 5)
+			.attr("y2", height - 1)
+			.attr("class", "transactionsAxes")
+
+		//X Axes
+		TransactionsGraph.append("svg:line")
+			.attr("x1", 1)
+			.attr("x2", width)
+			.attr("y1", height - 1 )
+			.attr("y2", height - 1 )
+			.attr("class", "transactionsAxes")
 
 		//Tick Marks
 		TransactionsGraph.selectAll(".yTicks")
 		    .data(y.ticks(3))
 		    .enter().append("svg:line")
 		    .attr("class", function(d) { return "yTick "})
-		    .attr("x1", function(d) { return 25 }) // We need a 1 px offset so the last tick won't get cutoff
-		    .attr("y1", function(d) {return y(d) })
-		    	.attr("x2", function(d) { return 30 })
-		    .attr("y2", function(d) {return y(d)}) // 7px is the tick height
+		    .attr("x1", function(d) { return 1 }) // We need a 1 px offset so the last tick won't get cutoff
+		    .attr("y1", function(d) {return y(d) + 1 })
+		    	.attr("x2", function(d) { return 5 })
+		    .attr("y2", function(d) {return y(d) + 1}) // 7px is the tick height
 
-		//Tick Numbers
-		TransactionsGraph.selectAll(".yLabel")
-		    .data(y.ticks(4))
-		    .enter().append("svg:text")
-		    .attr("class", "xLabel")
-		    .text(String)
-		    .attr("x", 10)
-		    .attr("y", function(d) { return y(d) + 10 })
-		    .attr("text-anchor", "middle")
+		TransactionsGraph.selectAll('rect')
+			.data(plotData)
+			.enter().append("rect")
+			.attr("class", function(d, i){ return "dayOfWeek"+i})
+			.attr("x", function(d, i) { return i*rectangleWidth + 1 } )
+			.attr("y", function(d) { return height - y(d) - 1; })
+			.attr("width", rectangleWidth)
+			.attr("height", function(d, i){ return y(d) })
+
+
+
 	}
 }
 
@@ -123,13 +122,14 @@ function RevenueController($scope, $http){
 			})
 	  	});
 
-		//Setup The Axes
+		//Y Axes
 		RevenueGraph.append("svg:line")
 			.attr("x1", 0)
 			.attr("x2", 0)
 			.attr("y1", 0)
-			.attr("y2", height)
+			.attr("y2", height - 1)
 
+		//X Axes
 		RevenueGraph.append("svg:line")
 			.attr("x1", 0)
 			.attr("x2", width)
@@ -157,7 +157,7 @@ function RevenueController($scope, $http){
 		    .enter().append("svg:line")
 		    .attr("class", "xTick")
 		    .attr("x1", function(d) { return x(d) - 1; }) // We need a 1 px offset so the last tick won't get cutoff
-		    .attr("y1", height)
+		    .attr("y1", height - 1)
 	    	.attr("x2", function(d) { return x(d) - 1; })
 		    .attr("y2", height - 7) // 7px is the tick height
 

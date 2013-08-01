@@ -14,7 +14,8 @@ block content
                     li
                         h3.label-text Transactions
                         h3.sub-label-text This Month:
-                        h3(ng-bind="transactionsThisMonth").transactionsLabel
+                        div.transactionsLabel-container
+                            h3(ng-bind="transactionsThisMonth").transactionsLabel
                     li
                         h3.label-text Revenue
                         h3.sub-label-text This Month
