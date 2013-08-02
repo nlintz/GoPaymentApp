@@ -61,15 +61,15 @@ function TransactionsController($scope, $http){
 			.attr("y2", height - 1 )
 			.attr("class", "transactionsAxes")
 
-		//Tick Marks
-		TransactionsGraph.selectAll(".yTicks")
-		    .data(y.ticks(3))
-		    .enter().append("svg:line")
-		    .attr("class", function(d) { return "yTick "})
-		    .attr("x1", function(d) { return 1 }) // We need a 1 px offset so the last tick won't get cutoff
-		    .attr("y1", function(d) {return y(d) + 1 })
-		    	.attr("x2", function(d) { return 5 })
-		    .attr("y2", function(d) {return y(d) + 1}) // 7px is the tick height
+		//X Axes (repeated lines)
+		for (i=0; i<4; i++){
+				TransactionsGraph.append("svg:line")
+					.attr("x1", 1)
+					.attr("x2", 5)
+					.attr("y1", i*height/3 )
+					.attr("y2", i*height/3 )
+					.attr("class", "x-axis-multi")
+				}
 
 		TransactionsGraph.selectAll('rect')
 			.data(plotData)
@@ -111,17 +111,6 @@ function RevenueController($scope, $http){
 			.attr('width', width)
 			.attr('height', height)
 
-		$http.get('data/revenue.json').success(function(data) {
-			$scope.monthlyRevenue = data[$scope.username];
-			index = 0;
-			angular.forEach($scope.monthlyRevenue, function(revenue){
-				RevenueGraph.append("svg:path")
-					.attr("d", dataLine(revenue))
-					.attr("class", 'revenue'+index)
-				index += 1;
-			})
-	  	});
-
 		//Y Axes
 		RevenueGraph.append("svg:line")
 			.attr("x1", 0)
@@ -129,27 +118,28 @@ function RevenueController($scope, $http){
 			.attr("y1", 0)
 			.attr("y2", height - 1)
 
-		//X Axes
+		//X Axes (repeated lines)
+		for (i=0; i<5; i++){
+				RevenueGraph.append("svg:line")
+					.attr("x1", 0)
+					.attr("x2", width)
+					.attr("y1", i*height/4 + 1)
+					.attr("y2", i*height/4 + 1)
+					.attr("class", "x-axis-multi")
+				}
+
+		//X Axes (bottom line)
 		RevenueGraph.append("svg:line")
 			.attr("x1", 0)
 			.attr("x2", width)
 			.attr("y1", height - 1)
 			.attr("y2", height - 1)
 
+
 		var dataLine = d3.svg.line()
 	    	.x(function(d,i) { return x(i); })
 		    .y(function(d) { return y(d); })
 
-		// //Tick Numbers
-		// var xTickSpacing = width/8 //Spacing between each tick is the total width/4, to center ticks we want half the spacing
-		// RevenueGraph.selectAll(".xLabel")
-		//     .data(x.ticks(4))
-		//     .enter().append("svg:text")
-		//     .attr("class", "xLabel")
-		//     .text(String)
-		//     .attr("x", function(d) { return x(d) - xTickSpacing })
-		//     .attr("y", height)
-		//     .attr("text-anchor", "middle")
 
 		// Tick Marks
 		RevenueGraph.selectAll(".xTicks")
@@ -157,10 +147,24 @@ function RevenueController($scope, $http){
 		    .enter().append("svg:line")
 		    .attr("class", "xTick")
 		    .attr("x1", function(d) { return x(d) - 1; }) // We need a 1 px offset so the last tick won't get cutoff
-		    .attr("y1", height - 1)
+		    .attr("y1", height)
 	    	.attr("x2", function(d) { return x(d) - 1; })
 		    .attr("y2", height - 7) // 7px is the tick height
 
+		//
+
+
+		$http.get('data/revenue.json').success(function(data) {
+			$scope.monthlyRevenue = data[$scope.username];
+			index = 0;
+			angular.forEach($scope.monthlyRevenue, function(revenue){
+				RevenueGraph.append("svg:path")
+					.attr("d", dataLine(revenue))
+					.attr("class", 'revenue'+index)
+					.attr("transform", "translate("+ width/8 +")")
+				index += 1;
+			})
+	  	});
 	// RevenueGraph.append("svg:path").attr("d", dataLine(data)); //The graphs
 	}
 }

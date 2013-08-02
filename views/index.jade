@@ -30,7 +30,18 @@ block content
                 div.revenue.content-block
                     h3.revenue-label Revenue Over Month
                     div#RevenueGraph
-                    h3.revenue-x-axis Week
+                    ul.revenue-y-axis
+                        li.y-axis-number 1 
+                        li.y-axis-number 1 
+                        li.y-axis-number 1 
+                        li.y-axis-number 1 
+                        li.y-axis-number 1 
+                    ul.revenue-x-axis
+                        li.x-axis-number 1
+                        li.x-axis-number 2
+                        li.x-axis-number 3
+                        li.x-axis-number 4
+                    h3.revenue-x-axis-label Week
             div.insights-container
                 div.insights.content-block
                     h2.insights-label Insights
@@ -43,6 +54,20 @@ block content
                     h3.transactions-label By Day Of Week: 
                     h3.transactions-month{{transactionsMonth}}
                     div#TransactionsGraph
+                    ul.transactions-y-axis
+                        li.y-axis-number 1 
+                        li.y-axis-number 1 
+                        li.y-axis-number 1 
+                        li.y-axis-number 1 
+
+                    ul.transactions-month-label-container
+                        li.transactions-month-label M
+                        li.transactions-month-label Tu
+                        li.transactions-month-label W
+                        li.transactions-month-label Th
+                        li.transactions-month-label F
+                        li.transactions-month-label Sa
+                        li.transactions-month-label Su
             div.itemized_products-container
                 img(src="/images/ItemizedFiller.png", height="217", width="271")
             div.logo-container
