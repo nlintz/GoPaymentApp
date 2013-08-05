@@ -76,7 +76,6 @@ def monthlyTransactions(csvDict, month):
 		day = int(dateStr.split('-')[0])
 		dayOfWeek = date(year, month, day).weekday()
 		monthlyTransactionsDict[dayOfWeek] += 1
-		# print monthlyTransactionsDict[dayOfWeek]
 
 	return monthlyTransactionsDict
 

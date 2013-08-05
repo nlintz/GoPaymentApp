@@ -54,6 +54,7 @@ function TransactionsController($scope, $http, uiService){
 			.attr('height', height)
 
 		$http.get('data/transaction.json').success(function(data){
+					maximum = 0;
 					$scope.weeklyTransactions = data[$scope.username];
 					angular.forEach($scope.weeklyTransactions, function(transaction){
 						maximum = Math.max(transaction, maximum);
@@ -62,12 +63,7 @@ function TransactionsController($scope, $http, uiService){
 					var yAxisIntervals = maximum/3;
 					$scope.intervalIndex = _.range(4).map(function(index){
 						var revenue = index*yAxisIntervals;
-						if (revenue >= 1000){
-							return parseInt(index * yAxisIntervals/1000) + "K";
-						}
-						else {
-							return  parseInt(index * yAxisIntervals);
-						}
+						return  parseInt(index * yAxisIntervals);
 					}).reverse();
 					makePlot(TransactionsGraph);
 				});
@@ -143,6 +139,7 @@ function RevenueController($scope, $http, $filter, uiService){
 
 		$http.get('data/revenue.json').success(function(data) {
 			$scope.monthlyRevenue = data[$scope.username];
+			maximum = 0;
 			angular.forEach($scope.monthlyRevenue, function(revenue){
 				maximum = Math.max(maximum, d3.max(revenue));
 			})
@@ -150,7 +147,7 @@ function RevenueController($scope, $http, $filter, uiService){
 			$scope.intervalIndex = _.range(5).map(function(index){
 				var revenue = index*yAxisIntervals;
 				if (revenue >= 1000){
-					return "$" + parseInt(index * yAxisIntervals/1000) + "K"
+					return "$" + parseInt(index * yAxisIntervals/100)/10 + "K"
 				}
 				else {
 					return "$" + parseInt(index * yAxisIntervals)
