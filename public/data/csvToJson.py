@@ -3,17 +3,17 @@ import json
 import sys
 from datetime import date
 
-def getNames():
+def getNames(infile):
 	result = set()
-	file = open('data338Screened.csv', 'rU')
+	file = open(infile, 'rU')
 	reader = csv.reader(file, delimiter=',', quotechar='|')
 	for row in reader:
 		result.add(row[2])
 	return result
 
-def buildCsvDict(loginName): #TODO REFACTOR
+def buildCsvDict(loginName, infile): #TODO REFACTOR
 	result = []
-	file = open('data338Screened.csv', 'rU')
+	file = open(infile, 'rU')
 	reader = csv.reader(file, delimiter=',', quotechar = '|')
 	for row in reader:
 		if row[2] == loginName: #row2 is the login name field
@@ -81,33 +81,32 @@ def monthlyTransactions(csvDict, month):
 	return monthlyTransactionsDict
 
 
-def nameMonthlyRevenueDict(month): #Returns a dictionary of names: revenue for the last 4 month
+def nameMonthlyRevenueDict(month, infile): #Returns a dictionary of names: revenue for the last 4 month
 	nameMonthlyRevenueDict = {}
-	for name in getNames():
+	for name in getNames(infile):
 		if name != "LOGIN_NAME":
-			nameMonthlyRevenueDict[name] = monthlyRevenue(buildCsvDict(name), month)
+			nameMonthlyRevenueDict[name] = monthlyRevenue(buildCsvDict(name, infile), month)
 	return nameMonthlyRevenueDict
 
-def nameMonthlyTransactionsDict(month): #Returns a dictionary of names: revenue for the last 4 month
+def nameMonthlyTransactionsDict(month, infile): #Returns a dictionary of names: revenue for the last 4 month
 	mockDict = {"hi":"world"}
 	nameMonthlyTransactionsDict = {}
-	for name in getNames():
+	for name in getNames(infile):
 		if name != "LOGIN_NAME":
-			nameMonthlyTransactionsDict[name] = monthlyTransactions(buildCsvDict(name), month)
+			nameMonthlyTransactionsDict[name] = monthlyTransactions(buildCsvDict(name, infile), month)
 
 	return nameMonthlyTransactionsDict
 
 if __name__ == "__main__":
-	# nameMonthlyTransactionsDict("JUN")
 	function = sys.argv[1]
 	month = sys.argv[2]
 
 	if function == "revenue":
 		with open('revenue.json', 'w') as outfile:
-			json.dump(nameMonthlyRevenueDict(month),outfile)
+			json.dump(nameMonthlyRevenueDict(month, 'data338Screened.csv'),outfile)
 			outfile.close()
 	if function == "transaction":
 		with open('transaction.json', 'w') as outfile:
-			json.dump(nameMonthlyTransactionsDict(month),outfile)
+			json.dump(nameMonthlyTransactionsDict(month, 'data338Screened.csv'),outfile)
 			outfile.close()
 

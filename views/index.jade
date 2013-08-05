@@ -2,13 +2,23 @@ extends layout
 
 block content
     div.page-container(ng-controller = "DataReportController")
+        div.ui-controls
+            label Business Name
+                input(type="text", ng-model="businessName").ui-input
+            label Username
+                input(type="text", ng-model="username").ui-input
+            label Insight Top
+                textarea(rows="4", cols="20", ng-model="insightsTop").ui-input
+            label Insight Top
+                textarea(rows="4", cols="20", ng-model="insightsBottom").ui-input
+            button(ng-click="updatePlots()") Change Data
         div.heading-container
             div.top
                 div.documentTitle
                     h1.document-title-text {{businessName}}
                 div.subTitle
                     h4.subtitle-text Data Report By GoPayment
-                    h4.subtitle-text {{dataReportDate}}
+                    h4.subtitle-text {{month + " " + year}}
             div.bottom
                 ul
                     li
@@ -18,24 +28,32 @@ block content
                             h3(ng-bind="transactionsThisMonth").transactionsLabel
                     li
                         h3.label-text Revenue
-                        h3.sub-label-text This Month
-                        h3(ng-bind="revenueThisMonth").transactionsLabel
+                        h3.sub-label-text This Month:
+                        div.transactionsLabel-container
+                            h3(ng-bind="revenueThisMonth").transactionsLabel.revenue-modification
                     li
                         h3.label-text Sales Tax
-                        h3.sub-label-text Due This Quarter
-                        h3(ng-bind="salesTaxThisQuarter").transactionsLabel
+                        h3.sub-label-text Due This Quarter:
+                        div.transactionsLabel-container
+                            h3(ng-bind="salesTaxThisQuarter").transactionsLabel
 
         div.content-container
             div.revenue-container(ng-controller="RevenueController")
                 div.revenue.content-block
                     h3.revenue-label Revenue Over Month
                     div#RevenueGraph
-                    ul.revenue-y-axis
-                        li.y-axis-number 1 
-                        li.y-axis-number 1 
-                        li.y-axis-number 1 
-                        li.y-axis-number 1 
-                        li.y-axis-number 1 
+                    ul.legend
+                        li.revenue-legend
+                            span.legend-color.month1
+                            span {{monthIndex | monthFilter}}
+                        li.revenue-legend
+                            span.legend-color.month2
+                            span {{monthIndex - 1 | monthFilter}}
+                        li.revenue-legend
+                            span.legend-color.month3
+                            span {{monthIndex - 2 | monthFilter}}
+                    ul.revenue-y-axis {{yAxisIntervals}}
+                        li.y-axis-number(ng-repeat="tickValue in intervalIndex") {{tickValue}}
                     ul.revenue-x-axis
                         li.x-axis-number 1
                         li.x-axis-number 2
@@ -52,13 +70,10 @@ block content
                 div.transactions.content-block
                     h3.transactions-label Transactions
                     h3.transactions-label By Day Of Week: 
-                    h3.transactions-month{{transactionsMonth}}
+                    h3.transactions-month{{month}}
                     div#TransactionsGraph
                     ul.transactions-y-axis
-                        li.y-axis-number 1 
-                        li.y-axis-number 1 
-                        li.y-axis-number 1 
-                        li.y-axis-number 1 
+                        li.y-axis-number(ng-repeat="tickValue in intervalIndex") {{tickValue}}
 
                     ul.transactions-month-label-container
                         li.transactions-month-label M
@@ -72,13 +87,21 @@ block content
                 img(src="/images/ItemizedFiller.png", height="217", width="271")
             div.logo-container
                 img(src="/images/gopayment_logo.png", height="37", width="200")
-
             div.footer
+
 
     script(type='text/javascript' 
         src="d3/d3.js")
+    script(type='text/javascript' 
+        src="underscore/underscore-min.js")
     script(type="text/javascript",
         src="angular/angular.min.js")
+    script(type="text/javascript",
+        src="javascripts/app.js")
+    script(type="text/javascript",
+        src="javascripts/filters.js")
+    script(type="text/javascript",
+        src="javascripts/services.js")
     script(type='text/javascript' 
         src="javascripts/controllers.js")
 

@@ -1,22 +1,44 @@
-function DataReportController($scope, $http){
+function DataReportController($scope, $http, uiService){
 	$http.get('MASTER_CONTROLS.json').success(function(data) {
     	$scope.configuration = data;
     	$scope.insightsTop = data.insightsTop
     	$scope.insightsBottom = data.insightsBottom
     	$scope.username = $scope.configuration.username;
+	  	$scope.month = $scope.configuration.month;
+	  	$scope.year = $scope.configuration.year;
+	  	$scope.businessName = $scope.configuration.businessName;
+	  	$scope.dataReportDate = $scope.configuration.dataReportDate;
+	  	$scope.updatePlots = function(){
+		d3.selectAll("svg").remove();
+	  	uiService.callTransactionsInit()
+	  	uiService.callRevenueInit()
+	  	}
   	});
+
+  	$http.get('data/transaction.json').success(function(data){
+		var weeklyTransactions = data[$scope.username];
+		$scope.transactionsThisMonth = 0
+		angular.forEach(weeklyTransactions, function(transaction){
+			$scope.transactionsThisMonth += transaction
+		});
+	});
+
+	$http.get('data/revenue.json').success(function(data) {
+		var monthlyRevenue = data[$scope.username];
+		$scope.revenueThisMonth = 0;
+		angular.forEach(monthlyRevenue, function(revenue){
+			$scope.revenueThisMonth += revenue.reduce(function(a,b){return a+b})
+		})
+		$scope.revenueThisMonth = "$" + $scope.revenueThisMonth
+	});
+
   	
-  	$scope.transactionsMonth = "May";
-  	$scope.businessName = "Cashmere";
-  	$scope.dataReportDate = "May 2013";
-	$scope.transactionsThisMonth = 100;
-	$scope.revenueThisMonth = 100;
 	$scope.salesTaxThisQuarter = "N/A"
 
 
 }
 
-function TransactionsController($scope, $http){
+function TransactionsController($scope, $http, uiService){
 	var width = 186;
 	var height = 170;
 	var maximum = 0;	
@@ -24,27 +46,41 @@ function TransactionsController($scope, $http){
 	var xAxisWidth = width + 15; // We need to offset the yaxis by 15px to accomadate the text
 	var plotData = []
 
-	$http.get('data/transaction.json').success(function(data){
-		$scope.weeklyTransactions = data[$scope.username];
-		angular.forEach($scope.weeklyTransactions, function(transaction){
-			// console.log(transaction)
-			maximum = Math.max(transaction, maximum);
-			plotData.push(transaction);
-		})
-		makePlot()
-
-	});
-
-	function makePlot(){
-		var x = d3.scale.linear().domain([0, 6]).range([0, xAxisWidth]);
-		var y = d3.scale.linear().domain([0, maximum]).range([height, 0]);
-
-		var rectangleWidth = width/7
+	$scope.inititalize = function(){
+		plotData = []
 		var TransactionsGraph = d3.select('#TransactionsGraph')
 			.append('svg:svg')
 			.attr('width', width)
 			.attr('height', height)
 
+		$http.get('data/transaction.json').success(function(data){
+					$scope.weeklyTransactions = data[$scope.username];
+					angular.forEach($scope.weeklyTransactions, function(transaction){
+						maximum = Math.max(transaction, maximum);
+						plotData.push(transaction);
+					})
+					var yAxisIntervals = maximum/3;
+					$scope.intervalIndex = _.range(4).map(function(index){
+						var revenue = index*yAxisIntervals;
+						if (revenue >= 1000){
+							return parseInt(index * yAxisIntervals/1000) + "K";
+						}
+						else {
+							return  parseInt(index * yAxisIntervals);
+						}
+					}).reverse();
+					makePlot(TransactionsGraph);
+				});
+	}
+	uiService.setTransactionsInit($scope.inititalize)
+	uiService.callTransactionsInit()
+
+	function makePlot(TransactionsGraph){
+
+		var x = d3.scale.linear().domain([0, 6]).range([0, xAxisWidth]);
+		var y = d3.scale.linear().domain([0, maximum]).range([height, 0]);
+
+		var rectangleWidth = width/7
 							//Y Axes
 		TransactionsGraph.append("svg:line")
 			.attr("x1", 1)
@@ -66,50 +102,71 @@ function TransactionsController($scope, $http){
 				TransactionsGraph.append("svg:line")
 					.attr("x1", 1)
 					.attr("x2", 5)
-					.attr("y1", i*height/3 )
-					.attr("y2", i*height/3 )
+					.attr("y1", i*height/3 - 1)
+					.attr("y2", i*height/3 - 1)
 					.attr("class", "x-axis-multi")
 				}
-
 		TransactionsGraph.selectAll('rect')
 			.data(plotData)
 			.enter().append("rect")
 			.attr("class", function(d, i){ return "dayOfWeek"+i})
 			.attr("x", function(d, i) { return i*rectangleWidth + 1 } )
-			.attr("y", function(d) { return height - y(d) - 1; })
+			.attr("y", function(d) { return y(d); })
 			.attr("width", rectangleWidth)
-			.attr("height", function(d, i){ return y(d) })
+			.attr("height", function(d, i){ return height - y(d) })
+			.attr("transform", "translate(0 -1)")
 
 
 
 	}
 }
 
-function RevenueController($scope, $http){
-
-	// var data = [0, 1, 5, 4];
+function RevenueController($scope, $http, $filter, uiService){
 
 	var width = 304;
 	var height = 254;
 	var maximum = 0;
+	var months = ["January", "February", "March", "April", "May", "June", "July", "August", 
+		"September", "October", "November", "December"];
+	$http.get('MASTER_CONTROLS.json').success(function(data) {
+    	$scope.configuration = data;
+		$scope.month = $scope.configuration.month;
+		$scope.monthIndex = months.indexOf($scope.month);
+	})
 
-	$http.get('data/revenue.json').success(function(data) {
-		$scope.monthlyRevenue = data[$scope.username];
-		angular.forEach($scope.monthlyRevenue, function(revenue){
-			maximum = Math.max(maximum, d3.max(revenue));
-		})
-		makePlot();
-  	});
-
-	function makePlot(){
-		var x = d3.scale.linear().domain([0, 4]).range([0, width]);
-		var y = d3.scale.linear().domain([0, maximum]).range([0, height]);
-
+	$scope.inititalize = function(){
 
 		var RevenueGraph = d3.select('#RevenueGraph')
 			.append('svg:svg')
 			.attr('width', width)
 			.attr('height', height)
+
+		$http.get('data/revenue.json').success(function(data) {
+			$scope.monthlyRevenue = data[$scope.username];
+			angular.forEach($scope.monthlyRevenue, function(revenue){
+				maximum = Math.max(maximum, d3.max(revenue));
+			})
+			var yAxisIntervals = maximum/4;
+			$scope.intervalIndex = _.range(5).map(function(index){
+				var revenue = index*yAxisIntervals;
+				if (revenue >= 1000){
+					return "$" + parseInt(index * yAxisIntervals/1000) + "K"
+				}
+				else {
+					return "$" + parseInt(index * yAxisIntervals)
+				}
+			}).reverse();
+			makePlot(RevenueGraph);
+	  	});
+  	}
+  	uiService.setRevenueInit($scope.inititalize)
+	uiService.callRevenueInit()
+
+	function makePlot(RevenueGraph){
+		var x = d3.scale.linear().domain([0, 4]).range([0, width]);
+		var y = d3.scale.linear().domain([0, maximum]).range([0, height]);
+
+
 
 		//Y Axes
 		RevenueGraph.append("svg:line")
@@ -138,7 +195,7 @@ function RevenueController($scope, $http){
 
 		var dataLine = d3.svg.line()
 	    	.x(function(d,i) { return x(i); })
-		    .y(function(d) { return y(d); })
+		    .y(function(d) { return height-y(d); })
 
 
 		// Tick Marks
@@ -150,8 +207,6 @@ function RevenueController($scope, $http){
 		    .attr("y1", height)
 	    	.attr("x2", function(d) { return x(d) - 1; })
 		    .attr("y2", height - 7) // 7px is the tick height
-
-		//
 
 
 		$http.get('data/revenue.json').success(function(data) {

@@ -52,8 +52,8 @@ h1, h2, h3, h4, h5 {
 	font-size: 16px;
 }
 .bottom .sub-label-text {
-	font-family: HelveticaNeueRegular;
-	font-weight: normal;
+	font-family: HelveticaNeueLight;
+	font-weight: lighter;
 	font-size: 16px;
 }
 
@@ -128,6 +128,37 @@ h1, h2, h3, h4, h5 {
 	width:100%;
 }
 
+.legend {
+	list-style-type: none;
+	position: absolute;
+	top: 110px;
+	left: 80px;
+}
+
+.legend li {
+	font-family: DINNextLightRegular;
+	font-size: 14px;
+}
+
+.legend .legend-color {
+	width: 7px;
+	height: 7px;
+	display: inline-block;
+	margin-right: 5px;
+	position: relative;
+	top: -2px;
+}
+
+.legend .month1 {
+	background-color: #66CCCC;
+}
+.legend .month2 {
+	background-color: #E21F26;
+}
+.legend .month3 {
+	background-color: #F89824;
+}
+
 .page-container {
 	width: 612px;
 	height:792px;
@@ -157,6 +188,7 @@ h1, h2, h3, h4, h5 {
 	text-align:center;
 	color: #231F20;
 	font-weight: 100;
+	font-size: 15px;
 }
 
 .revenue-x-axis-label {
@@ -164,6 +196,8 @@ h1, h2, h3, h4, h5 {
 	position: relative;
 	bottom: 5px;
 	font-weight: 100;
+	font-size: 13px;
+	padding-top: 20px;
 }
 
 .revenue-x-axis {
@@ -171,7 +205,11 @@ h1, h2, h3, h4, h5 {
 	margin-left: 35px;
 	text-align: center;
 	position: absolute;
-	bottom: 7px;
+	bottom: 20px;
+}
+
+.x-axis-multi {
+	stroke: rgba(198, 203, 211, 1);
 }
 
 .x-axis-number {
@@ -186,7 +224,7 @@ h1, h2, h3, h4, h5 {
 	position: absolute;
 	top: 0px;
 	list-style-type: none;
-	padding-top: 47px;
+	padding-top: 29px;
 	margin-left: -5px;
 	height: 332px;
 	width: 40px;
@@ -201,7 +239,7 @@ h1, h2, h3, h4, h5 {
 }
 
 #RevenueGraph {
-	padding: 20px 0px 0px 40px;
+	padding: 10px 0px 0px 40px;
 }
 
 .revenue {
@@ -248,23 +286,23 @@ hr {
 
 .insights-label {
 	padding-top: 10px;
-	font-size: 20pt;
+	font-size: 20px;
 	text-align: center;
 	color: #231F20;
 	font-weight: 100;
 }
 
 .insights-bottom {
-	font-size: 10pt;
+	font-size: 12px;
 	font-weight: normal;
-	padding: 10px 10px 10px 10px;
+	padding: 0px 10px 10px 10px;
 
 }
 
 .insights-top {
-	font-size: 10pt;
+	font-size: 12px;
 	font-weight: normal;
-	padding: 10px 20px 10px 20px;
+	padding: 10px 20px 0px 20px;
 }
 
 .insights {
@@ -308,6 +346,11 @@ hr {
 	margin-top: 5px;
 }
 
+.transactionsLabel.revenue-modification{
+	color: #4E9F45;
+
+}
+
 .transactionsLabel-container {
 	margin-top: 2px;
 	border: 1px solid black;
@@ -317,7 +360,7 @@ hr {
 .transactions-label {
 	text-align: center;
 	font-weight: 100;
-	font-size: 12pt;
+	font-size: 14px;
 
 }
 
@@ -340,8 +383,8 @@ hr {
 
 .transactions-month {
 	text-align: center;
-	font-weight: 100;
-	font-size: 10pt;
+	font-weight: bolder;
+	font-size: 14px;
 	margin-bottom: 5px;
 }
 
@@ -391,13 +434,14 @@ path {
 }
 
 path.revenue0 {
-    stroke: #66CCCC;
+	stroke: rgba(102, 204, 204, 1);
 }
 path.revenue1 {
-    stroke: #E21F26;
+    stroke: rgba(226, 31, 38, 1);
 }
 path.revenue2 {
-    stroke: #F89824;
+	stroke: rgba(248, 152, 36, 1);
+
 }
 
 rect.dayOfWeek0 {
@@ -433,6 +477,16 @@ line.transactionsAxes {
 text {
     font-family: Arial;
     font-size: 9pt;
+}
+
+.ui-controls {
+	display: none;
+	position:absolute;
+	margin-left: -200px;
+}
+
+.ui-controls .ui-input {
+	display:block;
 }
 
 .xTick {
