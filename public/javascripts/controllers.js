@@ -1,5 +1,6 @@
 function DataReportController($scope, $http, uiService){
 	$http.get('MASTER_CONTROLS.json').success(function(data) {
+
     	$scope.configuration = data;
     	$scope.insightsTop = data.insightsTop
     	$scope.insightsBottom = data.insightsBottom
@@ -8,10 +9,12 @@ function DataReportController($scope, $http, uiService){
 	  	$scope.year = $scope.configuration.year;
 	  	$scope.businessName = $scope.configuration.businessName;
 	  	$scope.dataReportDate = $scope.configuration.dataReportDate;
+		$scope.salesTaxThisQuarter = $scope.configuration.salesTax;
+
 	  	$scope.updatePlots = function(){
-		d3.selectAll("svg").remove();
-	  	uiService.callTransactionsInit()
-	  	uiService.callRevenueInit()
+			d3.selectAll("svg").remove();
+		  	uiService.callTransactionsInit()
+		  	uiService.callRevenueInit()
 	  	}
   	});
 
@@ -31,9 +34,6 @@ function DataReportController($scope, $http, uiService){
 		})
 		$scope.revenueThisMonth = "$" + $scope.revenueThisMonth
 	});
-
-  	
-	$scope.salesTaxThisQuarter = "N/A"
 
 
 }
