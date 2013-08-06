@@ -146,7 +146,6 @@ function RevenueController($scope, $http, $filter, uiService){
 					$scope.monthlyRevenue[outerIndex][innerIndex] = innerIndex ? $scope.monthlyRevenue[outerIndex][innerIndex] + $scope.monthlyRevenue[outerIndex][innerIndex-1] : $scope.monthlyRevenue[outerIndex][innerIndex]
 				})
 			})
-			console.log($scope.monthlyRevenue)
 			angular.forEach($scope.monthlyRevenue, function(revenue){
 				maximum = Math.max(maximum, d3.max(revenue));
 			})
