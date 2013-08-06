@@ -13,29 +13,30 @@ function DataReportController($scope, $http, uiService){
 
 	  	$scope.updatePlots = function(){
 			d3.selectAll("svg").remove();
-		  	uiService.callTransactionsInit()
-		  	uiService.callRevenueInit()
+		  	uiService.callTransactionsInit();
+		  	uiService.callRevenueInit();
+		  	topDataInit();
 	  	}
   	});
-
-  	$http.get('data/transaction.json').success(function(data){
-		var weeklyTransactions = data[$scope.username];
-		$scope.transactionsThisMonth = 0
-		angular.forEach(weeklyTransactions, function(transaction){
-			$scope.transactionsThisMonth += transaction
+	function topDataInit(){
+	  	$http.get('data/transaction.json').success(function(data){
+			var weeklyTransactions = data[$scope.username];
+			$scope.transactionsThisMonth = 0
+			angular.forEach(weeklyTransactions, function(transaction){
+				$scope.transactionsThisMonth += transaction
+			});
 		});
-	});
+	
+		$http.get('data/revenue.json').success(function(data) {
+			var monthlyRevenue = data[$scope.username];
+			$scope.revenueThisMonth = 0;
+			angular.forEach(monthlyRevenue, function(revenue){
+				$scope.revenueThisMonth += revenue.reduce(function(a,b){return a+b})
+			})
+			$scope.revenueThisMonth = "$" + $scope.revenueThisMonth
+		})}
 
-	$http.get('data/revenue.json').success(function(data) {
-		var monthlyRevenue = data[$scope.username];
-		$scope.revenueThisMonth = 0;
-		angular.forEach(monthlyRevenue, function(revenue){
-			$scope.revenueThisMonth += revenue.reduce(function(a,b){return a+b})
-		})
-		$scope.revenueThisMonth = "$" + $scope.revenueThisMonth
-	});
-
-
+	topDataInit();
 }
 
 function TransactionsController($scope, $http, uiService){
@@ -140,6 +141,12 @@ function RevenueController($scope, $http, $filter, uiService){
 		$http.get('data/revenue.json').success(function(data) {
 			$scope.monthlyRevenue = data[$scope.username];
 			maximum = 0;
+			angular.forEach($scope.monthlyRevenue, function(monthlyRevenue, outerIndex){
+				angular.forEach(monthlyRevenue, function(revenue, innerIndex){
+					$scope.monthlyRevenue[outerIndex][innerIndex] = innerIndex ? $scope.monthlyRevenue[outerIndex][innerIndex] + $scope.monthlyRevenue[outerIndex][innerIndex-1] : $scope.monthlyRevenue[outerIndex][innerIndex]
+				})
+			})
+			console.log($scope.monthlyRevenue)
 			angular.forEach($scope.monthlyRevenue, function(revenue){
 				maximum = Math.max(maximum, d3.max(revenue));
 			})
@@ -206,17 +213,13 @@ function RevenueController($scope, $http, $filter, uiService){
 		    .attr("y2", height - 7) // 7px is the tick height
 
 
-		$http.get('data/revenue.json').success(function(data) {
-			$scope.monthlyRevenue = data[$scope.username];
-			index = 0;
-			angular.forEach($scope.monthlyRevenue, function(revenue){
-				RevenueGraph.append("svg:path")
-					.attr("d", dataLine(revenue))
-					.attr("class", 'revenue'+index)
-					.attr("transform", "translate("+ width/8 +")")
-				index += 1;
-			})
-	  	});
-	// RevenueGraph.append("svg:path").attr("d", dataLine(data)); //The graphs
+		index = 0;
+		angular.forEach($scope.monthlyRevenue, function(revenue){
+			RevenueGraph.append("svg:path")
+				.attr("d", dataLine(revenue))
+				.attr("class", 'revenue'+index)
+				.attr("transform", "translate("+ width/8 +")")
+			index += 1;
+		})
 	}
 }

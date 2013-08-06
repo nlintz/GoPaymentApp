@@ -44,14 +44,14 @@ block content
                     div#RevenueGraph
                     ul.legend
                         li.revenue-legend
-                            span.legend-color.month1
-                            span {{monthIndex | monthFilter}}
+                            span.legend-color.month3
+                            span {{monthIndex - 2 | monthFilter}}
                         li.revenue-legend
                             span.legend-color.month2
                             span {{monthIndex - 1 | monthFilter}}
                         li.revenue-legend
-                            span.legend-color.month3
-                            span {{monthIndex - 2 | monthFilter}}
+                            span.legend-color.month1
+                            span {{monthIndex | monthFilter}}
                     ul.revenue-y-axis {{yAxisIntervals}}
                         li.y-axis-number(ng-repeat="tickValue in intervalIndex") {{tickValue}}
                     ul.revenue-x-axis

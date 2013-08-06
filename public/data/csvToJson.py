@@ -27,9 +27,9 @@ def monthlyRevenue(csvDict, month):
 	monthIndexA = months.index(month)
 	monthIndexB = (months.index(month) - 1) % 11
 	monthIndexC = (months.index(month) - 2) % 11
-	monthIndexD = (months.index(month) - 3) % 11
+	# monthIndexD = (months.index(month) - 3) % 11
 
-	monthlyRevenueDict = {months[monthIndexA]: [], months[monthIndexB]: [], months[monthIndexC]: [], months[monthIndexD]: []}
+	monthlyRevenueDict = {months[monthIndexA]: [], months[monthIndexB]: [], months[monthIndexC]: []}
 
 	for entry in csvDict:
 		date = entry['PURCHASE_DATE']
@@ -42,8 +42,8 @@ def monthlyRevenue(csvDict, month):
 			monthlyRevenueDict[months[monthIndexB]].append((int(day),float(entry['PRICE'])))
 		if (month == months[monthIndexC]):
 			monthlyRevenueDict[months[monthIndexC]].append((int(day),float(entry['PRICE'])))
-		if (month == months[monthIndexD]):
-			monthlyRevenueDict[months[monthIndexD]].append((int(day),float(entry['PRICE'])))
+		# if (month == months[monthIndexD]):
+		# 	monthlyRevenueDict[months[monthIndexD]].append((int(day),float(entry['PRICE'])))
 
 	week1 = 0
 	week2 = 0
@@ -75,6 +75,7 @@ def monthlyTransactions(csvDict, month):
 		year = int("20"+dateStr.split('-')[2])
 		day = int(dateStr.split('-')[0])
 		dayOfWeek = date(year, month, day).weekday()
+		print dayOfWeek
 		monthlyTransactionsDict[dayOfWeek] += 1
 
 	return monthlyTransactionsDict

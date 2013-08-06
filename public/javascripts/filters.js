@@ -7,3 +7,4 @@ angular.module('Filters', [])
 			return months[monthIndex]
 		};
 	});
+	

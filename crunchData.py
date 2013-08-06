@@ -3,10 +3,10 @@ import json
 
 def crunchNumbersToJson(month, infile):
 	with open('public/data/revenue.json', 'w') as outfile:
-			json.dump(nameMonthlyRevenueDict(month, 'public/data/data338Screened.csv'), outfile)
+			json.dump(nameMonthlyRevenueDict(month, infile), outfile)
 			outfile.close()
 	with open('public/data/transaction.json', 'w') as outfile:
-			json.dump(nameMonthlyTransactionsDict(month, 'public/data/data338Screened.csv'), outfile)
+			json.dump(nameMonthlyTransactionsDict(month, infile), outfile)
 			outfile.close()
 
 if __name__ == "__main__":
