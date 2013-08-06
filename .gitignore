@@ -1,3 +1,4 @@
 *.csv
 revenue.json
 transaction.json
+*.pyc
