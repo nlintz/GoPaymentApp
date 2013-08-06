@@ -28,6 +28,7 @@ function DataReportController($scope, $http, uiService, Transactions, Revenue){
 	  	uiService.callRevenueInit();
   	});
 	function topDataInit(){
+		$scope.monthIndex = months.indexOf($scope.month);
 		Transactions.getTransactions.then(function(data){
 			$scope.transactions = data.data[$scope.username];
 			var thisMonthsTransactions = $scope.transactions[months.indexOf($scope.month)]
@@ -63,11 +64,12 @@ function TransactionsController($scope, $http, uiService, Transactions){
 			
 			$scope.monthlyTransactions = [];
 			for (var i=0; i<3; i++){
-				$scope.monthlyTransactions.push(transactions[$scope.username][months.indexOf($scope.month) - i]);
+				var monthIndex = (months.indexOf($scope.month)-i >= 0) ? (months.indexOf($scope.month)-i) : 12 + (months.indexOf($scope.month)-i);
+				$scope.monthlyTransactions.push(transactions[$scope.username][monthIndex]);
 			}
-
 			$scope.weeklyTransactions = [];
 			for (var i=0; i<7; i++){
+
 				$scope.weeklyTransactions.push($scope.monthlyTransactions[0][i]+$scope.monthlyTransactions[1][i]+$scope.monthlyTransactions[2][i])
 			}			
 
@@ -156,7 +158,8 @@ function RevenueController($scope, $http, $filter, uiService, Revenue){
 
 			$scope.monthlyRevenue = []
 			for (var i=0; i<3; i++){
-				$scope.monthlyRevenue.push(revenue[months.indexOf($scope.month) - i])
+				var monthIndex = (months.indexOf($scope.month)-i >= 0) ? (months.indexOf($scope.month)-i) : 12 + (months.indexOf($scope.month)-i);
+				$scope.monthlyRevenue.push(revenue[monthIndex])
 			}
 			function cumulativeArray(array){
 				cumuArray = [];
