@@ -6,7 +6,12 @@ block content
             label Business Name
                 input(type="text", ng-model="businessName").ui-input
             label Username
-                input(type="text", ng-model="username").ui-input
+                input(type="text", ng-model="username", ng-change="updatePlots()").ui-input
+            label Month
+                //- input(type="text", ng-model="month").ui-input
+                select(ng-model="month", ng-options="monthName for monthName in months", ng-change="updatePlots()").ui-input
+            label Sales Tax
+                input(type="text", ng-model="salesTax").ui-input
             label Insight Top
                 textarea(rows="4", cols="20", ng-model="insightsTop").ui-input
             label Insight Top
@@ -30,12 +35,12 @@ block content
                         h3.label-text Revenue
                         h3.sub-label-text This Month:
                         div.transactionsLabel-container
-                            h3(ng-bind="revenueThisMonth").transactionsLabel.revenue-modification
+                            h3(ng-bind-template="{{ '$'+revenueThisMonth }}").transactionsLabel.revenue-modification
                     li
                         h3.label-text Sales Tax
                         h3.sub-label-text Due This Quarter:
                         div.transactionsLabel-container
-                            h3(ng-bind="salesTaxThisQuarter").transactionsLabel
+                            h3(ng-bind="salesTax").transactionsLabel
 
         div.content-container
             div.revenue-container(ng-controller="RevenueController")
@@ -70,7 +75,7 @@ block content
                 div.transactions.content-block
                     h3.transactions-label Transactions
                     h3.transactions-label By Day Of Week: 
-                    h3.transactions-month{{month}}
+                    h3.transactions-month Over Last 3 Months
                     div#TransactionsGraph
                     ul.transactions-y-axis
                         li.y-axis-number(ng-repeat="tickValue in intervalIndex") {{tickValue}}

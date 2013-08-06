@@ -14,4 +14,10 @@ angular.module('Services', [])
 		this.callTransactionsInit = function(){
 			this.transactionsInit();
 		}
-	});
+	})
+	.service('Transactions', function($http){
+		this.getTransactions = $http.get('data/transactions.json');
+	})
+	.service('Revenue', function($http){
+		this.getRevenue = $http.get('data/revenue.json');
+	})

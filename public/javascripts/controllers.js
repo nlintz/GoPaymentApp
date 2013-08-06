@@ -1,6 +1,11 @@
-function DataReportController($scope, $http, uiService){
-	$http.get('MASTER_CONTROLS.json').success(function(data) {
+months = ["January", "February", "March", "April", "May", "June", "July", "August", 
+			"September", "October", "November", "December"];
 
+function DataReportController($scope, $http, uiService, Transactions, Revenue){
+	
+	$http.get('MASTER_CONTROLS.json').success(function(data) {
+		$scope.months = ["January", "February", "March", "April", "May", "June", "July", "August", 
+			"September", "October", "November", "December"];
     	$scope.configuration = data;
     	$scope.insightsTop = data.insightsTop
     	$scope.insightsBottom = data.insightsBottom
@@ -9,40 +14,39 @@ function DataReportController($scope, $http, uiService){
 	  	$scope.year = $scope.configuration.year;
 	  	$scope.businessName = $scope.configuration.businessName;
 	  	$scope.dataReportDate = $scope.configuration.dataReportDate;
-		$scope.salesTaxThisQuarter = $scope.configuration.salesTax;
+		$scope.salesTax = $scope.configuration.salesTax;
+		$scope.monthIndex = months.indexOf($scope.month);
 
 	  	$scope.updatePlots = function(){
 			d3.selectAll("svg").remove();
+		  	topDataInit();
 		  	uiService.callTransactionsInit();
 		  	uiService.callRevenueInit();
-		  	topDataInit();
 	  	}
+	  	topDataInit();
+	  	uiService.callTransactionsInit();
+	  	uiService.callRevenueInit();
   	});
 	function topDataInit(){
-	  	$http.get('data/transaction.json').success(function(data){
-			var weeklyTransactions = data[$scope.username];
-			$scope.transactionsThisMonth = 0
-			angular.forEach(weeklyTransactions, function(transaction){
-				$scope.transactionsThisMonth += transaction
-			});
+		Transactions.getTransactions.then(function(data){
+			$scope.transactions = data.data[$scope.username];
+			var thisMonthsTransactions = $scope.transactions[months.indexOf($scope.month)]
+			$scope.transactionsThisMonth = _.reduce(thisMonthsTransactions, function(memo, num){ return memo + num; }, 0);
 		});
-	
-		$http.get('data/revenue.json').success(function(data) {
-			var monthlyRevenue = data[$scope.username];
-			$scope.revenueThisMonth = 0;
-			angular.forEach(monthlyRevenue, function(revenue){
-				$scope.revenueThisMonth += revenue.reduce(function(a,b){return a+b})
-			})
-			$scope.revenueThisMonth = "$" + $scope.revenueThisMonth
-		})}
 
-	topDataInit();
+		Revenue.getRevenue.then(function(data){
+			$scope.revenue = data.data[$scope.username];
+			var thisMonthsRevenue = $scope.revenue[months.indexOf($scope.month)]
+			$scope.revenueThisMonth = _.reduce(thisMonthsRevenue, function(memo, num){ return memo + num; }, 0);
+		});
+
+	}
+
 }
 
-function TransactionsController($scope, $http, uiService){
+function TransactionsController($scope, $http, uiService, Transactions){
 	var width = 186;
 	var height = 170;
-	var maximum = 0;	
 	var yAxisHeight = height - 15; // We need to offset the yaxis by 15px to accomadate the text
 	var xAxisWidth = width + 15; // We need to offset the yaxis by 15px to accomadate the text
 	var plotData = []
@@ -53,29 +57,39 @@ function TransactionsController($scope, $http, uiService){
 			.append('svg:svg')
 			.attr('width', width)
 			.attr('height', height)
+		Transactions.getTransactions.then(function(data){
+			var transactions = data.data;
+			$scope.transactionsMaximum = 0;
+			
+			$scope.monthlyTransactions = [];
+			for (var i=0; i<3; i++){
+				$scope.monthlyTransactions.push(transactions[$scope.username][months.indexOf($scope.month) - i]);
+			}
 
-		$http.get('data/transaction.json').success(function(data){
-					maximum = 0;
-					$scope.weeklyTransactions = data[$scope.username];
-					angular.forEach($scope.weeklyTransactions, function(transaction){
-						maximum = Math.max(transaction, maximum);
-						plotData.push(transaction);
-					})
-					var yAxisIntervals = maximum/3;
-					$scope.intervalIndex = _.range(4).map(function(index){
-						var revenue = index*yAxisIntervals;
-						return  parseInt(index * yAxisIntervals);
-					}).reverse();
-					makePlot(TransactionsGraph);
-				});
+			$scope.weeklyTransactions = [];
+			for (var i=0; i<7; i++){
+				$scope.weeklyTransactions.push($scope.monthlyTransactions[0][i]+$scope.monthlyTransactions[1][i]+$scope.monthlyTransactions[2][i])
+			}			
+
+			angular.forEach($scope.weeklyTransactions, function(transaction){
+				$scope.transactionsMaximum = Math.max(transaction, $scope.transactionsMaximum);
+				plotData.push(transaction);
+			})
+
+			var yAxisIntervals = $scope.transactionsMaximum/3;
+			$scope.intervalIndex = _.range(4).map(function(index){
+				var revenue = index*yAxisIntervals;
+				return  parseInt(index * yAxisIntervals);
+			}).reverse();
+			makePlot(TransactionsGraph);
+		})
 	}
 	uiService.setTransactionsInit($scope.inititalize)
-	uiService.callTransactionsInit()
 
 	function makePlot(TransactionsGraph){
 
 		var x = d3.scale.linear().domain([0, 6]).range([0, xAxisWidth]);
-		var y = d3.scale.linear().domain([0, maximum]).range([height, 0]);
+		var y = d3.scale.linear().domain([0, $scope.transactionsMaximum]).range([height, 0]);
 
 		var rectangleWidth = width/7
 							//Y Axes
@@ -99,10 +113,11 @@ function TransactionsController($scope, $http, uiService){
 				TransactionsGraph.append("svg:line")
 					.attr("x1", 1)
 					.attr("x2", 5)
-					.attr("y1", i*height/3 - 1)
-					.attr("y2", i*height/3 - 1)
+					.attr("y1", i*height/3 )
+					.attr("y2", i*height/3 )
 					.attr("class", "x-axis-multi")
 				}
+
 		TransactionsGraph.selectAll('rect')
 			.data(plotData)
 			.enter().append("rect")
@@ -110,26 +125,23 @@ function TransactionsController($scope, $http, uiService){
 			.attr("x", function(d, i) { return i*rectangleWidth + 1 } )
 			.attr("y", function(d) { return y(d); })
 			.attr("width", rectangleWidth)
-			.attr("height", function(d, i){ return height - y(d) })
-			.attr("transform", "translate(0 -1)")
+			.attr("height", function(d, i){ return height-y(d) })
+			.attr("transform", "translate(0 0)")
 
 
 
 	}
 }
 
-function RevenueController($scope, $http, $filter, uiService){
+function RevenueController($scope, $http, $filter, uiService, Revenue){
 
 	var width = 304;
 	var height = 254;
 	var maximum = 0;
-	var months = ["January", "February", "March", "April", "May", "June", "July", "August", 
-		"September", "October", "November", "December"];
-	$http.get('MASTER_CONTROLS.json').success(function(data) {
-    	$scope.configuration = data;
-		$scope.month = $scope.configuration.month;
-		$scope.monthIndex = months.indexOf($scope.month);
-	})
+	// $http.get('MASTER_CONTROLS.json').success(function(data) {
+ //    	$scope.configuration = data;
+	// 	$scope.month = $scope.configuration.month;
+	// })
 
 	$scope.inititalize = function(){
 
@@ -138,18 +150,38 @@ function RevenueController($scope, $http, $filter, uiService){
 			.attr('width', width)
 			.attr('height', height)
 
-		$http.get('data/revenue.json').success(function(data) {
-			$scope.monthlyRevenue = data[$scope.username];
-			maximum = 0;
-			angular.forEach($scope.monthlyRevenue, function(monthlyRevenue, outerIndex){
-				angular.forEach(monthlyRevenue, function(revenue, innerIndex){
-					$scope.monthlyRevenue[outerIndex][innerIndex] = innerIndex ? $scope.monthlyRevenue[outerIndex][innerIndex] + $scope.monthlyRevenue[outerIndex][innerIndex-1] : $scope.monthlyRevenue[outerIndex][innerIndex]
-				})
-			})
-			angular.forEach($scope.monthlyRevenue, function(revenue){
-				maximum = Math.max(maximum, d3.max(revenue));
-			})
-			var yAxisIntervals = maximum/4;
+		Revenue.getRevenue.then(function(data){
+			var revenue = data.data[$scope.username];
+			$scope.revenueMaximum = 0;
+
+			$scope.monthlyRevenue = []
+			for (var i=0; i<3; i++){
+				$scope.monthlyRevenue.push(revenue[months.indexOf($scope.month) - i])
+			}
+			function cumulativeArray(array){
+				cumuArray = [];
+				for (var i in array){
+					if (i > 0){
+						cumuArray.push(array[i]+cumuArray[i-1]);
+					}
+					else{
+						cumuArray.push(array[i]);
+					}
+				}
+				return cumuArray;
+			}
+
+			var plotData = []
+			for (var i in $scope.monthlyRevenue){
+				plotData.push(cumulativeArray($scope.monthlyRevenue[i]))
+			}
+
+			for (var i in plotData){
+				$scope.revenueMaximum = Math.max($scope.revenueMaximum, d3.max(plotData[i]));
+			}
+			$scope.revenueMaximum *= 1.1; //Slightly increase the maximum to make the data look better
+
+			var yAxisIntervals = $scope.revenueMaximum/4;
 			$scope.intervalIndex = _.range(5).map(function(index){
 				var revenue = index*yAxisIntervals;
 				if (revenue >= 1000){
@@ -159,17 +191,16 @@ function RevenueController($scope, $http, $filter, uiService){
 					return "$" + parseInt(index * yAxisIntervals)
 				}
 			}).reverse();
-			makePlot(RevenueGraph);
-	  	});
-  	}
+			makePlot(RevenueGraph, plotData);
+
+		})
+	}
+
   	uiService.setRevenueInit($scope.inititalize)
-	uiService.callRevenueInit()
 
-	function makePlot(RevenueGraph){
+	function makePlot(RevenueGraph, plotData){
 		var x = d3.scale.linear().domain([0, 4]).range([0, width]);
-		var y = d3.scale.linear().domain([0, maximum]).range([0, height]);
-
-
+		var y = d3.scale.linear().domain([0, $scope.revenueMaximum]).range([0, height]);
 
 		//Y Axes
 		RevenueGraph.append("svg:line")
@@ -213,7 +244,8 @@ function RevenueController($scope, $http, $filter, uiService){
 
 
 		index = 0;
-		angular.forEach($scope.monthlyRevenue, function(revenue){
+		angular.forEach(plotData, function(revenue){
+
 			RevenueGraph.append("svg:path")
 				.attr("d", dataLine(revenue))
 				.attr("class", 'revenue'+index)

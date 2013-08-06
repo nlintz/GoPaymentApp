@@ -65,23 +65,32 @@ class GoPaymentReportDataHandler(object):
 	def __init__(self, infile):
 		self._users = UsersResource(infile)
 	
-	def revenueJson(self):
+	def revenueJson(self, outfile):
 		"""
-		Creates a json object mapping username to revenue ordered by month eg "nlintz":["0","100","200"...]
-		The size of the revenue ordering is 12 x 1 since there are 12 months
+		Creates a json object mapping username to revenue ordered by month eg "nlintz":[["0","100","200","200"],[...]]
+		The size of the revenue ordering is 12 x 4 since there are 12 months and four weeks in a month
 		"""
 		revenueByUser = {}
 		for user in self._users.getUsers():
-			revenueByMonth = map(lambda x: 0, range(12))
+			revenueByMonth = map(lambda x: map(lambda x: 0, range(4)), range(12))
 			username = user.keys()[0]
 			revenueByUser.setdefault(username, revenueByMonth)
 			for transaction in user[username]:
 				month = helpers.getMonthFromDate(transaction["PURCHASE_DATE"])
-				revenueByUser[username][helpers.monthToInt(month)] += float(transaction["TOTAL"])
-		helpers.writeToJson(revenueByUser, 'revenue.json')
+				day = helpers.getDayFromDate(transaction["PURCHASE_DATE"])
+
+				if int(day) < 7:
+					revenueByUser[username][helpers.monthToInt(month)][0] += float(transaction["TOTAL"])
+				if int(day) >= 7 and int(day) < 14:
+					revenueByUser[username][helpers.monthToInt(month)][1] += float(transaction["TOTAL"])
+				if int(day) >= 14 and int(day) < 21:
+					revenueByUser[username][helpers.monthToInt(month)][2] += float(transaction["TOTAL"])
+				else:
+					revenueByUser[username][helpers.monthToInt(month)][3] += float(transaction["TOTAL"])
+		helpers.writeToJson(revenueByUser, outfile)
 
 
-	def transactionsJson(self):
+	def transactionsJson(self, outfile):
 		"""
 		Creates a json object mapping username to weekly transactions volume by month and by day of week eg "nlintz":[["0","100","1","0","100","1","2"],["200"...]]
 		The size of the transactions ordering is 12 x 7 since there are 12 months amd 7 days in the week
@@ -91,16 +100,25 @@ class GoPaymentReportDataHandler(object):
 			username = user.keys()[0]
 			transactionsByMonth = map(lambda x: map(lambda x: 0, range(7)), range(12))
 			transactionByUser.setdefault(username, transactionsByMonth)
+
 			for transaction in user[username]:
 				month = helpers.getMonthFromDate(transaction["PURCHASE_DATE"])
 				dayOfWeek = helpers.getDayOfWeekFromDate(transaction["PURCHASE_DATE"])
 				transactionByUser[username][helpers.monthToInt(month)][dayOfWeek] += 1
-		helpers.writeToJson(transactionByUser, 'transactions.json')
+		helpers.writeToJson(transactionByUser, outfile)
 
 
 if __name__ == "__main__":
 	infile = open('data338Screened.csv', 'rU')
 	report = GoPaymentReportDataHandler(infile)
-	report.transactionsJson()
-	report.revenueJson()
+	report.transactionsJson('transactions.json')
+	report.revenueJson('revenue.json')
 	infile.close()
+
+def ProcessRevenueData(infile, outfile):
+	report = GoPaymentReportDataHandler(infile)
+	report.revenueJson(outfile)
+
+def ProcessTransactionsData(infile, outfile):
+	report = GoPaymentReportDataHandler(infile)
+	report.transactionsJson(outfile)

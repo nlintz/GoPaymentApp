@@ -1,20 +1,19 @@
-from public.data.csvToJson import *
+from public.data.dataProcessor import *
 import json
 
-def crunchNumbersToJson(month, infile):
-	with open('public/data/revenue.json', 'w') as outfile:
-			json.dump(nameMonthlyRevenueDict(month, infile), outfile)
-			outfile.close()
-	with open('public/data/transaction.json', 'w') as outfile:
-			json.dump(nameMonthlyTransactionsDict(month, infile), outfile)
-			outfile.close()
+# def crunchNumbersToJson(infile):
+# 	with open('public/data/revenue.json', 'w') as outfile:
+# 			ProcessRevenueData(infile, outfile)
+# 	with open('public/data/revenue.json', 'w') as outfile:
+# 			ProcessTransactionsData(infile, outfile)
 
 if __name__ == "__main__":
-	monthsShortNames = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
-	monthLongNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-	monthNameDict = {longName:shortName for longName, shortName in zip(monthLongNames, monthsShortNames)}
-
-	config_data = open('public/MASTER_CONTROLS.json')
-	config = json.load(config_data)
-	config_data.close()
-	crunchNumbersToJson(monthNameDict[config["month"]], config["dataFile"])
+	configFile = open('public/MASTER_CONTROLS.json', 'r')
+	config = json.loads(configFile.read())
+	dataFile = config["dataFile"]
+	infile = open(dataFile, 'rU')
+	report = GoPaymentReportDataHandler(infile)
+	report.transactionsJson('public/data/transactions.json')
+	report.revenueJson('public/data/revenue.json')
+	infile.close()
+	configFile.close()

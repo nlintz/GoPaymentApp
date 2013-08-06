@@ -5,8 +5,13 @@ from datetime import date
 def getMonthFromDate(date):
 	date = date.split(" ")[0]
 	month = date.split("-")[1]
-
 	return month
+
+def getDayFromDate(date):
+	date = date.split(" ")[0]
+	day = date.split("-")[0]
+	return day
+
 
 def getDayOfWeekFromDate(dateStr):
 	months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
